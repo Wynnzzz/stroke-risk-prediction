@@ -93,51 +93,59 @@ Dataset ini terdiri dari fitur-fitur gejala, satu fitur demografis (usia), serta
 
 Untuk memahami distribusi dan hubungan antar fitur, dilakukan beberapa teknik exploratory data analysis (EDA), antara lain:
 
-1. **Deskripsi Statistik Awal**  
-   Menggunakan `df.describe()` untuk memahami nilai rata-rata, standar deviasi, nilai minimum dan maksimum dari masing-masing fitur.
+1. **Deskripsi Statistik Awal**
+   
+   Deskripsi statistik awal dilakukan dengan menggunakan fungsi df.describe(), yang memberikan informasi seperti nilai rata-rata, standar deviasi, nilai minimum, maksimum, serta kuartil dari setiap fitur. Langkah ini berguna untuk mendapatkan gambaran umum mengenai skala nilai dan variasi data pada masing-masing fitur, khususnya untuk fitur numerik seperti usia dan persentase risiko stroke.
 
-2. **Pengecekan Nilai Kosong dan Duplikat**  
-   - Nilai kosong diperiksa dengan `df.isnull().sum()` dan tidak ditemukan missing values.
-   - Ditemukan sebanyak 1021 data duplikat menggunakan `df.duplicated().sum()` yang kemudian dihapus.
+2. **Pengecekan Nilai Kosong dan Duplikat**
+   
+   Pemeriksaan nilai kosong dilakukan menggunakan `df.isnull().sum()`, dan hasilnya menunjukkan bahwa tidak terdapat missing values pada dataset. Selain itu, ditemukan sebanyak 1.021 data duplikat dengan menggunakan `df.duplicated().sum()`, yang kemudian dihapus melalui `df.drop_duplicates(inplace=True)` untuk menghindari bias pada model akibat pengulangan data yang sama.
 
-3. **Visualisasi Outlier dan Distribusi**  
-   - Visualisasi **boxplot** untuk mendeteksi outlier pada setiap fitur numerik.
-   - Visualisasi **histogram + KDE** untuk melihat bentuk distribusi masing-masing fitur.
+3. **Visualisasi Outlier dan Distribusi**
+   
+   Deteksi outlier dilakukan melalui visualisasi boxplot pada setiap fitur numerik. Visualisasi ini membantu dalam mengidentifikasi nilai ekstrem yang dapat memengaruhi performa model. Distribusi data juga dianalisis menggunakan histogram yang dilengkapi dengan Kernel Density Estimation (KDE) untuk melihat pola sebaran data secara lebih halus. Histogram menunjukkan bahwa sebagian besar fitur gejala bersifat biner (0 atau 1), sedangkan fitur usia menunjukkan distribusi yang lebih merata dan kontinu.
 
-4. **Analisis Korelasi Antar Fitur**  
-   - Korelasi antara fitur dihitung dan divisualisasikan dengan **heatmap**, membantu dalam mengidentifikasi keterkaitan antar gejala dan usia dengan risiko stroke.
-
-Tahapan EDA ini penting untuk memahami struktur dan karakteristik data yang digunakan, serta untuk menentukan preprocessing dan pemilihan algoritma yang tepat pada tahap selanjutnya.
-
+4. **Analisis Korelasi Antar Fitur**
+   
+   Korelasi antar fitur dihitung dan divisualisasikan dalam bentuk heatmap. Heatmap ini membantu dalam memahami hubungan antara fitur-fitur gejala, usia, dan target prediksi risiko stroke. Dari hasil korelasi, ditemukan bahwa usia memiliki korelasi cukup tinggi dengan risiko stroke (0,73), dan risiko stroke memiliki korelasi kuat dengan status risiko biner (0,79). Sementara itu, korelasi antar gejala dan dengan risiko stroke cenderung rendah (sekitar 0,12–0,18), menunjukkan bahwa gejala tersebut bersifat relatif independen dan kontribusinya terhadap risiko stroke tidak terlalu besar dibandingkan usia.
+     ![alt text](https://github.com/Wynnzzz/stroke-risk-prediction/blob/main/img/correlation.png?raw=true)
      
 ## Data Preparation
 
 Tahapan data preparation dilakukan untuk memastikan bahwa data yang digunakan dalam pemodelan bersih, relevan, dan sesuai untuk diterapkan pada algoritma machine learning. Berikut adalah urutan tahapan yang dilakukan dalam proses data preparation:
 
-1. **Menghapus Data Duplikat**  
-   - Ditemukan sebanyak 1.021 data duplikat menggunakan fungsi `df.duplicated().sum()`.
-   - Duplikat ini dihapus dengan `df.drop_duplicates(inplace=True)` untuk menghindari bias pada model yang disebabkan oleh pengulangan data yang sama.
+1. **Menghapus Data Duplikat**
+   
+   Sebanyak 1.021 data duplikat ditemukan dengan menggunakan fungsi `df.duplicated().sum()`. Duplikat ini dihapus dengan `df.drop_duplicates(inplace=True)` untuk menghindari bias akibat pengulangan data yang sama, yang dapat menyebabkan model belajar secara berlebihan pada data yang redundant.
 
-2. **Pengecekan dan Penanganan Missing Values**  
-   - Dilakukan pengecekan missing values dengan `df.isnull().sum()`.
-   - Hasilnya, tidak ditemukan nilai kosong pada dataset, sehingga tidak perlu dilakukan imputasi.
+2. **Pengecekan dan Penanganan Missing Values**
+   
+   Pengecekan nilai kosong dilakukan menggunakan `df.isnull().sum()` dan tidak ditemukan adanya missing values pada dataset. Karena itu, tidak perlu dilakukan proses imputasi atau penanganan lanjutan terhadap nilai kosong.
 
-3. **Eksplorasi Outlier dan Distribusi Data**  
-   - Visualisasi outlier dilakukan dengan boxplot untuk setiap fitur menggunakan `sns.boxplot`.
-   - Distribusi data dianalisis menggunakan histogram dengan `sns.histplot`, dilengkapi dengan `kde=True` untuk melihat pola sebaran data.
-   - Tahapan ini membantu mengenali fitur yang memiliki distribusi tidak normal atau outlier ekstrem yang mungkin memengaruhi performa model.
+3. **Eksplorasi Outlier dan Distribusi Data**
+   
+   Visualisasi outlier dilakukan dengan menggunakan boxplot dari `seaborn` (`sns.boxplot`) pada masing-masing fitur. Karena sebagian besar fitur merupakan variabel biner, boxplot hanya menampilkan satu kotak horizontal penuh, yang menunjukkan bahwa nilainya berkisar pada 0 dan 1. Outlier hanya ditemukan pada fitur `Stroke Risk (%)`, namun fitur ini tidak digunakan dalam klasifikasi, sehingga outlier dapat diabaikan. Distribusi data dianalisis lebih lanjut menggunakan histogram (`sns.histplot`) dengan `kde=True`, yang menunjukkan bahwa variabel gejala sangat terpolarisasi (bernilai 0 atau 1), sementara distribusi usia lebih menyebar dan risiko stroke (%) menunjukkan pola mendekati distribusi normal.
+   
+      ![alt text](https://github.com/Wynnzzz/stroke-risk-prediction/blob/main/img/boxplot.png?raw=true)
 
-4. **Feature Selection (Pemilihan Fitur)**  
-   - Fitur target `Stroke Risk (%)` dihapus karena fokus prediksi hanya pada klasifikasi biner (`At Risk (Binary)`).
-   - Fitur input yang digunakan terdiri dari 15 gejala dan 1 fitur usia (total 16 fitur).
+   Distribusi data dianalisis menggunakan histogram dengan `sns.histplot`, dilengkapi dengan `kde=True` untuk melihat pola sebaran data.
+   
+     ![alt text](https://github.com/Wynnzzz/stroke-risk-prediction/blob/main/img/distribution.png?raw=true)
+   
+     Sebagian besar variabel gejala seperti nyeri dada, sesak napas, detak jantung tidak teratur, kelelahan, pusing, edema, dan lain-lain memiliki distribusi yang sangat terpolarisasi dengan dua puncak di ujung nilai 0 dan 1. Ini mengindikasikan bahwa data gejala tersebut bersifat biner atau sangat jarang berada dalam nilai antara, artinya responden biasanya hanya melaporkan ada atau tidaknya gejala tersebut secara tegas.
+     Distribusi usia berbeda dengan variabel gejala, menunjukkan variasi yang lebih merata dengan beberapa fluktuasi, mencerminkan distribusi populasi yang beragam mulai dari usia muda hingga lansia. Sementara itu, distribusi risiko stroke (%) menunjukkan pola mendekati distribusi normal dengan puncak di tengah, yang berarti sebagian besar individu memiliki risiko stroke pada kisaran menengah, dengan lebih sedikit yang memiliki risiko sangat rendah atau sangat tinggi.
+     Terakhir, distribusi status risiko biner (At Risk) juga menunjukkan pola yang didominasi oleh nilai 0 dan 1, yang menegaskan bahwa data ini juga bersifat kategorikal, memisahkan individu ke dalam dua kelompok risiko yang jelas: berisiko dan tidak berisiko. Secara keseluruhan, grafik distribusi ini memberikan gambaran jelas tentang karakteristik data yang mayoritas bersifat biner untuk gejala, variasi usia yang cukup luas, dan risiko stroke yang tersebar lebih kontinu.
 
-5. **Normalisasi Fitur Numerik**  
-   - Karena data mengandung fitur numerik dengan skala berbeda-beda (misalnya, `Age` bernilai puluhan, sedangkan fitur lain berupa biner), dilakukan normalisasi menggunakan `StandardScaler()` dari Scikit-learn.
-   - Ini penting untuk algoritma seperti Logistic Regression dan SVM yang sensitif terhadap skala fitur.
+   Tahapan ini membantu mengenali fitur yang memiliki distribusi tidak normal atau outlier ekstrem yang mungkin memengaruhi performa model.
 
-6. **Pemisahan Data Train dan Test**  
-   - Dataset dibagi menjadi 80% data latih dan 20% data uji menggunakan `train_test_split()` dengan `random_state=42` untuk reprodusibilitas.
-   - Ini dilakukan agar performa model bisa diukur secara objektif terhadap data yang tidak dilihat sebelumnya.
+5. **Feature Selection (Pemilihan Fitur)**  
+   Fitur target `Stroke Risk (%)` dihapus karena fokus dari model adalah klasifikasi biner terhadap risiko stroke, yaitu fitur `At Risk (Binary)`. Fitur input yang digunakan terdiri dari 15 fitur gejala dan 1 fitur usia, sehingga total terdapat 16 fitur yang digunakan sebagai input model klasifikasi.
+
+6. **Normalisasi Fitur Numerik**  
+   Karena fitur `Age` memiliki skala nilai yang berbeda dibandingkan fitur-fitur lain yang bersifat biner, dilakukan proses normalisasi menggunakan `StandardScaler()` dari Scikit-learn. Normalisasi ini penting terutama untuk algoritma seperti Logistic Regression yang sensitif terhadap perbedaan skala antar fitur.
+
+7. **Pemisahan Data Train dan Test**  
+   Dataset dibagi menjadi dua bagian: 80% untuk data latih dan 20% untuk data uji. Pemisahan dilakukan menggunakan fungsi `train_test_split()` dari Scikit-learn dengan `random_state=42` untuk memastikan reprodusibilitas hasil. Pembagian ini bertujuan agar performa model dapat dievaluasi secara objektif menggunakan data yang tidak digunakan selama pelatihan.
 
 Proses data preparation ini bertujuan untuk memastikan bahwa data yang masuk ke dalam model machine learning dalam kondisi optimal dan siap untuk dilakukan pelatihan. Dengan menghilangkan duplikasi, menyamakan skala fitur, dan membagi data secara adil, maka performa dan generalisasi model dapat meningkat secara signifikan.
 
