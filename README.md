@@ -14,7 +14,7 @@ Dataset Stroke Risk Prediction Based on Symptoms telah dikembangkan untuk menduk
 
 - Laporan resmi dari American Stroke Association (ASA), Mayo Clinic, dan World Health Organization (WHO)
 
-Dalam penelitian ini, model pembelajaran mesin seperti Logistic Regression dan Random Forest akan digunakan untuk membangun sistem prediksi biner mengenai apakah seseorang berisiko mengalami stroke. Untuk meningkatkan akurasi dan efisiensi, dilakukan pula hyperparameter tuning serta feature selection menggunakan teknik SelectKBest. Model akan dievaluasi menggunakan metrik seperti akurasi, presisi, recall, dan F1-score. Selain itu, model yang lebih kompleks seperti XGBoost akan digunakan sebagai pembanding untuk mengetahui apakah pendekatan kompleks dapat memberikan performa yang lebih unggul.
+Dalam penelitian ini, model pembelajaran mesin seperti Logistic Regression dan Random Forest akan digunakan untuk membangun sistem prediksi biner mengenai apakah seseorang berisiko mengalami stroke. Untuk meningkatkan akurasi dan efisiensi, dilakukan pula hyperparameter tuning untuk setiap model. Model akan dievaluasi menggunakan metrik seperti akurasi, presisi, recall, dan F1-score. Selain itu, model yang lebih kompleks seperti XGBoost akan digunakan sebagai pembanding untuk mengetahui apakah pendekatan kompleks dapat memberikan performa yang lebih unggul.
 
 Masalah prediksi risiko stroke perlu diselesaikan karena dapat menjadi alat bantu yang signifikan dalam mendukung pengambilan keputusan medis secara cepat dan akurat. Implementasi sistem ini di fasilitas kesehatan, terutama di daerah dengan akses terbatas terhadap spesialis neurologi, dapat membantu dalam penyaringan awal pasien berisiko tinggi serta mempercepat intervensi medis yang krusial.
 
@@ -52,7 +52,6 @@ Stroke merupakan salah satu penyebab utama kematian dan kecacatan di seluruh dun
 
 1. Menggunakan beberapa algoritma machine learning seperti Logistic Regression sebagai baseline model yang sederhana, Random Forest sebagai model ensambel yang mampu menangani kompleksitas data, serta XGBoost sebagai model yang lebih kompleks dengan kemampuan generalisasi tinggi.
 2. Menerapkan teknik hyperparameter tuning seperti RandomizedSearchCV atau GridSearchCV untuk menemukan kombinasi parameter terbaik, serta mengevaluasi performa model menggunakan metrik seperti accuracy, precision, recall, dan F1-score untuk memastikan hasil yang optimal.
-3. Melakukan feature selection dengan menggunakan metode seperti SelectKBest atau analisis feature importance untuk menyederhanakan model, meningkatkan interpretabilitas, dan menjaga performa prediksi agar tetap tinggi.
 
 ## Data Understanding
 
