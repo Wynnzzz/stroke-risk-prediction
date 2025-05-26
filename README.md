@@ -150,27 +150,76 @@ Tahapan data preparation dilakukan untuk memastikan bahwa data yang digunakan da
 Proses data preparation ini bertujuan untuk memastikan bahwa data yang masuk ke dalam model machine learning dalam kondisi optimal dan siap untuk dilakukan pelatihan. Dengan menghilangkan duplikasi, menyamakan skala fitur, dan membagi data secara adil, maka performa dan generalisasi model dapat meningkat secara signifikan.
 
 ## Modeling
-Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
-- Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
-- Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
+- Telah dilakukan pemodelan machine learning untuk menyelesaikan permasalahan klasifikasi risiko stroke menggunakan tiga algoritma, yaitu **Logistic Regression**, **Random Forest**, dan **XGBoost**.
+
+- Setiap model dibangun melalui tahapan pemisahan data menjadi training dan testing, standarisasi data menggunakan `StandardScaler`, dan tuning parameter menggunakan Grid Search atau Randomized Search untuk mendapatkan kombinasi parameter terbaik.
+
+    - Logistic Regression (C=1, penalty='l2', solver='liblinear')
+    - Random Forest (n_estimators=200, max_depth=None, min_samples_split=2, min_samples_leaf=1)
+    - XGBoost (n_estimators=200, learning_rate=0.2, max_depth=5, subsample=0.8)
+
+- **Kelebihan dan kekurangan algoritma**:
+    - *Logistic Regression*: Cepat dan mudah diinterpretasi, namun terbatas untuk hubungan linear.
+    - *Random Forest*: Kuat terhadap overfitting dan dapat menangani data kompleks, tetapi membutuhkan sumber daya komputasi lebih besar.
+    - *XGBoost*: Akurasi tinggi, efisien, dan menangani fitur kompleks dengan baik, namun tuning lebih kompleks.
+
+- Proses improvement dilakukan melalui **hyperparameter tuning** pada setiap model untuk mengoptimalkan performa dan menghindari overfitting.
+
+- Berdasarkan hasil evaluasi, model **XGBoost** dipilih sebagai model terbaik karena menghasilkan metrik evaluasi sempurna (akurasi, precision, recall, f1-score = 1.00) serta memiliki kemampuan menangani data kompleks dan fitur penting secara efisien.
 
 ## Evaluation
-Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
 
-Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
-- Penjelasan mengenai metrik yang digunakan
-- Menjelaskan hasil proyek berdasarkan metrik evaluasi
+Pada proyek klasifikasi risiko stroke ini, digunakan empat metrik evaluasi utama, yaitu **akurasi**, **precision**, **recall**, dan **F1-score**. Keempat metrik ini dipilih karena dapat memberikan gambaran menyeluruh terkait performa model klasifikasi, khususnya dalam konteks data yang memiliki dua kelas (binary classification), yaitu *berisiko* dan *tidak berisiko* stroke.
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+- **Akurasi** mengukur seberapa banyak prediksi yang benar dibandingkan dengan seluruh jumlah data. Formula:
+  
+  $$
+  \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
+  $$
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+- **Precision** menunjukkan proporsi prediksi positif yang benar-benar positif. Formula:
 
-**---Ini adalah bagian akhir laporan---**
+$$
+  \text{Precision} = \frac{TP}{TP + FP}
+$$
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+- **Recall** (Sensitivity) mengukur seberapa banyak data positif yang berhasil dideteksi. Formula:
+
+$$
+  \text{Recall} = \frac{TP}{TP + FN}
+$$
+
+- **F1-score** adalah rata-rata harmonik antara precision dan recall, digunakan untuk menyeimbangkan keduanya. Formula:
+
+$$
+  \text{F1-score} = 2 \times \frac{Precision \times Recall}{Precision + Recall}
+$$
+
+### Hasil Evaluasi Model
+
+### Tabel Perbandingan Metrik Evaluasi
+
+| Model               | Akurasi | Precision | Recall | F1-Score |
+|---------------------|---------|-----------|--------|----------|
+| Logistic Regression | 1.00    | 1.00      | 1.00   | 1.00     |
+| Random Forest       | 0.95    | 0.95      | 0.94   | 0.94     |
+| XGBoost             | 1.00    | 1.00      | 1.00   | 1.00     |
+
+Tiga model telah dibandingkan berdasarkan metrik-metrik di atas, dan hasil terbaik adalah sebagai berikut:
+
+1. **Logistic Regression**:  
+   Akurasi, precision, recall, dan F1-score sebesar **1.00**.  
+   Model ini menunjukkan performa sempurna, namun karena sifatnya linear, ada potensi overfitting pada data uji jika tidak diuji lebih lanjut dengan data baru.
+
+2. **Random Forest**:  
+   Akurasi sebesar **0.95**, dengan precision dan recall yang juga tinggi (**0.94–0.97**).  
+   Meskipun sangat baik, performanya masih sedikit di bawah XGBoost dan Logistic Regression.
+
+3. **XGBoost**:  
+   Memberikan hasil sempurna dengan akurasi, precision, recall, dan F1-score **1.00**.  
+   Model ini juga lebih stabil dibanding Logistic Regression karena mampu menangani kompleksitas fitur dan interaksi antar variabel.
+
+### Kesimpulan
+
+Berdasarkan evaluasi metrik dan kestabilan hasil, **XGBoost** dipilih sebagai model terbaik untuk memprediksi risiko stroke. Hasil ini juga mendukung pernyataan solusi yang menginginkan model berkinerja tinggi dan mampu menangani data kompleks.
