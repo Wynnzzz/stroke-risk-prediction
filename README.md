@@ -98,30 +98,9 @@ Untuk memahami distribusi dan hubungan antar fitur, dilakukan beberapa teknik ex
 
 2. **Pengecekan Nilai Kosong dan Duplikat**
    
-   Pemeriksaan nilai kosong dilakukan menggunakan `df.isnull().sum()`, dan hasilnya menunjukkan bahwa tidak terdapat missing values pada dataset. Selain itu, ditemukan sebanyak 1.021 data duplikat dengan menggunakan `df.duplicated().sum()`, yang kemudian dihapus melalui `df.drop_duplicates(inplace=True)` untuk menghindari bias pada model akibat pengulangan data yang sama.
+   Pemeriksaan nilai kosong dilakukan menggunakan `df.isnull().sum()`, dan hasilnya menunjukkan bahwa tidak terdapat missing values pada dataset. Selain itu, ditemukan sebanyak 1.021 data duplikat dengan menggunakan `df.duplicated().sum()`.
 
 3. **Visualisasi Outlier dan Distribusi**
-   
-   Deteksi outlier dilakukan melalui visualisasi boxplot pada setiap fitur numerik. Visualisasi ini membantu dalam mengidentifikasi nilai ekstrem yang dapat memengaruhi performa model. Distribusi data juga dianalisis menggunakan histogram yang dilengkapi dengan Kernel Density Estimation (KDE) untuk melihat pola sebaran data secara lebih halus. Histogram menunjukkan bahwa sebagian besar fitur gejala bersifat biner (0 atau 1), sedangkan fitur usia menunjukkan distribusi yang lebih merata dan kontinu.
-
-4. **Analisis Korelasi Antar Fitur**
-   
-   Korelasi antar fitur dihitung dan divisualisasikan dalam bentuk heatmap. Heatmap ini membantu dalam memahami hubungan antara fitur-fitur gejala, usia, dan target prediksi risiko stroke. Dari hasil korelasi, ditemukan bahwa usia memiliki korelasi cukup tinggi dengan risiko stroke (0,73), dan risiko stroke memiliki korelasi kuat dengan status risiko biner (0,79). Sementara itu, korelasi antar gejala dan dengan risiko stroke cenderung rendah (sekitar 0,12–0,18), menunjukkan bahwa gejala tersebut bersifat relatif independen dan kontribusinya terhadap risiko stroke tidak terlalu besar dibandingkan usia.
-     ![alt text](https://github.com/Wynnzzz/stroke-risk-prediction/blob/main/img/correlation.png?raw=true)
-     
-## Data Preparation
-
-Tahapan data preparation dilakukan untuk memastikan bahwa data yang digunakan dalam pemodelan bersih, relevan, dan sesuai untuk diterapkan pada algoritma machine learning. Berikut adalah urutan tahapan yang dilakukan dalam proses data preparation:
-
-1. **Menghapus Data Duplikat**
-   
-   Sebanyak 1.021 data duplikat ditemukan dengan menggunakan fungsi `df.duplicated().sum()`. Duplikat ini dihapus dengan `df.drop_duplicates(inplace=True)` untuk menghindari bias akibat pengulangan data yang sama, yang dapat menyebabkan model belajar secara berlebihan pada data yang redundant.
-
-2. **Pengecekan dan Penanganan Missing Values**
-   
-   Pengecekan nilai kosong dilakukan menggunakan `df.isnull().sum()` dan tidak ditemukan adanya missing values pada dataset. Karena itu, tidak perlu dilakukan proses imputasi atau penanganan lanjutan terhadap nilai kosong.
-
-3. **Eksplorasi Outlier dan Distribusi Data**
    
    Visualisasi outlier dilakukan dengan menggunakan boxplot dari `seaborn` (`sns.boxplot`) pada masing-masing fitur. Karena sebagian besar fitur merupakan variabel biner, boxplot hanya menampilkan satu kotak horizontal penuh, yang menunjukkan bahwa nilainya berkisar pada 0 dan 1. Outlier hanya ditemukan pada fitur `Stroke Risk (%)`, namun fitur ini tidak digunakan dalam klasifikasi, sehingga outlier dapat diabaikan. Distribusi data dianalisis lebih lanjut menggunakan histogram (`sns.histplot`) dengan `kde=True`, yang menunjukkan bahwa variabel gejala sangat terpolarisasi (bernilai 0 atau 1), sementara distribusi usia lebih menyebar dan risiko stroke (%) menunjukkan pola mendekati distribusi normal.
    
@@ -137,35 +116,76 @@ Tahapan data preparation dilakukan untuk memastikan bahwa data yang digunakan da
 
    Tahapan ini membantu mengenali fitur yang memiliki distribusi tidak normal atau outlier ekstrem yang mungkin memengaruhi performa model.
 
-5. **Feature Selection (Pemilihan Fitur)**  
+4. **Analisis Korelasi Antar Fitur**
+   
+   Korelasi antar fitur dihitung dan divisualisasikan dalam bentuk heatmap. Heatmap ini membantu dalam memahami hubungan antara fitur-fitur gejala, usia, dan target prediksi risiko stroke. Dari hasil korelasi, ditemukan bahwa usia memiliki korelasi cukup tinggi dengan risiko stroke (0,73), dan risiko stroke memiliki korelasi kuat dengan status risiko biner (0,79). Sementara itu, korelasi antar gejala dan dengan risiko stroke cenderung rendah (sekitar 0,12–0,18), menunjukkan bahwa gejala tersebut bersifat relatif independen dan kontribusinya terhadap risiko stroke tidak terlalu besar dibandingkan usia.
+     ![alt text](https://github.com/Wynnzzz/stroke-risk-prediction/blob/main/img/correlation.png?raw=true)
+     
+## Data Preparation
+
+Tahapan data preparation dilakukan untuk memastikan bahwa data yang digunakan dalam pemodelan bersih, relevan, dan sesuai untuk diterapkan pada algoritma machine learning. Berikut adalah urutan tahapan yang dilakukan dalam proses data preparation:
+
+1. **Menghapus Data Duplikat**
+   
+   Sebanyak 1.021 data duplikat ditemukan dengan menggunakan fungsi `df.duplicated().sum()`. Duplikat ini dihapus dengan `df.drop_duplicates(inplace=True)` untuk menghindari bias akibat pengulangan data yang sama, yang dapat menyebabkan model belajar secara berlebihan pada data yang redundant.
+
+2. **Feature Selection (Pemilihan Fitur)**  
    Fitur target `Stroke Risk (%)` dihapus karena fokus dari model adalah klasifikasi biner terhadap risiko stroke, yaitu fitur `At Risk (Binary)`. Fitur input yang digunakan terdiri dari 15 fitur gejala dan 1 fitur usia, sehingga total terdapat 16 fitur yang digunakan sebagai input model klasifikasi.
 
-6. **Normalisasi Fitur Numerik**  
+3. **Normalisasi Fitur Numerik**  
    Karena fitur `Age` memiliki skala nilai yang berbeda dibandingkan fitur-fitur lain yang bersifat biner, dilakukan proses normalisasi menggunakan `StandardScaler()` dari Scikit-learn. Normalisasi ini penting terutama untuk algoritma seperti Logistic Regression yang sensitif terhadap perbedaan skala antar fitur.
 
-7. **Pemisahan Data Train dan Test**  
+4. **Pemisahan Data Train dan Test**  
    Dataset dibagi menjadi dua bagian: 80% untuk data latih dan 20% untuk data uji. Pemisahan dilakukan menggunakan fungsi `train_test_split()` dari Scikit-learn dengan `random_state=42` untuk memastikan reprodusibilitas hasil. Pembagian ini bertujuan agar performa model dapat dievaluasi secara objektif menggunakan data yang tidak digunakan selama pelatihan.
 
 Proses data preparation ini bertujuan untuk memastikan bahwa data yang masuk ke dalam model machine learning dalam kondisi optimal dan siap untuk dilakukan pelatihan. Dengan menghilangkan duplikasi, menyamakan skala fitur, dan membagi data secara adil, maka performa dan generalisasi model dapat meningkat secara signifikan.
 
-## Modeling
+# Modeling
 
-- Telah dilakukan pemodelan machine learning untuk menyelesaikan permasalahan klasifikasi risiko stroke menggunakan tiga algoritma, yaitu **Logistic Regression**, **Random Forest**, dan **XGBoost**.
+Telah dilakukan pemodelan machine learning untuk menyelesaikan permasalahan klasifikasi risiko stroke menggunakan tiga algoritma, yaitu **Logistic Regression**, **Random Forest**, dan **XGBoost**.
 
-- Setiap model dibangun melalui tahapan pemisahan data menjadi training dan testing, standarisasi data menggunakan `StandardScaler`, dan tuning parameter menggunakan Grid Search atau Randomized Search untuk mendapatkan kombinasi parameter terbaik.
+Setiap model dibangun melalui tahapan:
+- Pemisahan data menjadi training dan testing.
+- Standarisasi data menggunakan `StandardScaler`.
+- Hyperparameter tuning menggunakan Grid Search atau Randomized Search untuk mendapatkan kombinasi parameter terbaik:
 
-    - Logistic Regression (C=1, penalty='l2', solver='liblinear')
-    - Random Forest (n_estimators=200, max_depth=None, min_samples_split=2, min_samples_leaf=1)
-    - XGBoost (n_estimators=200, learning_rate=0.2, max_depth=5, subsample=0.8)
+| Algoritma            | Hyperparameter Terbaik                                      |
+|----------------------|-------------------------------------------------------------|
+| Logistic Regression  | `C=1`, `penalty='l2'`, `solver='liblinear'`                |
+| Random Forest        | `n_estimators=200`, `max_depth=None`, `min_samples_split=2`, `min_samples_leaf=1` |
+| XGBoost              | `n_estimators=200`, `learning_rate=0.2`, `max_depth=5`, `subsample=0.8` |
 
-- **Kelebihan dan kekurangan algoritma**:
-    - *Logistic Regression*: Cepat dan mudah diinterpretasi, namun terbatas untuk hubungan linear.
-    - *Random Forest*: Kuat terhadap overfitting dan dapat menangani data kompleks, tetapi membutuhkan sumber daya komputasi lebih besar.
-    - *XGBoost*: Akurasi tinggi, efisien, dan menangani fitur kompleks dengan baik, namun tuning lebih kompleks.
+## Prinsip Kerja Algoritma
 
-- Proses improvement dilakukan melalui **hyperparameter tuning** pada setiap model untuk mengoptimalkan performa dan menghindari overfitting.
+- **Logistic Regression**  
+  Logistic Regression memodelkan probabilitas suatu kelas menggunakan **fungsi sigmoid** yang mengubah output linear menjadi rentang [0, 1]. Model ini mencari parameter (koefisien) yang memaksimalkan kemungkinan prediksi yang benar. Cocok untuk masalah klasifikasi biner dengan hubungan linier antar variabel.
 
-- Berdasarkan hasil evaluasi, model **XGBoost** dipilih sebagai model terbaik karena menghasilkan metrik evaluasi sempurna (akurasi, precision, recall, f1-score = 1.00) serta memiliki kemampuan menangani data kompleks dan fitur penting secara efisien.
+- **Random Forest**  
+  Random Forest adalah algoritma **ensemble learning** yang membangun banyak pohon keputusan (decision trees) secara paralel pada subset data dan fitur yang berbeda. Hasil akhir diperoleh melalui **voting mayoritas**. Hal ini membuatnya kuat terhadap overfitting dan cocok untuk data non-linear dan kompleks.
+
+- **XGBoost (Extreme Gradient Boosting)**  
+  XGBoost adalah implementasi dari teknik **gradient boosting** yang membangun model secara **sekuensial**, di mana tiap pohon baru dibentuk untuk memperbaiki kesalahan dari model sebelumnya. XGBoost efisien, mampu menangani missing value, dan dikenal menghasilkan performa tinggi dalam berbagai kompetisi data science.
+
+## Kelebihan dan Kekurangan
+
+| Algoritma            | Kelebihan                                                                 | Kekurangan                                                       |
+|----------------------|---------------------------------------------------------------------------|------------------------------------------------------------------|
+| Logistic Regression  | Cepat, sederhana, mudah diinterpretasi                                    | Tidak efektif untuk relasi non-linear                            |
+| Random Forest        | Kuat terhadap overfitting, menangani data non-linear dengan baik          | Konsumsi memori tinggi, interpretasi hasil lebih kompleks        |
+| XGBoost              | Akurasi tinggi, efisien, tangguh terhadap fitur kompleks & interaksi non-linear | Proses tuning kompleks dan memerlukan pemahaman mendalam         |
+
+## Hasil dan Evaluasi
+
+Proses improvement dilakukan melalui **hyperparameter tuning** untuk mengoptimalkan performa model sekaligus menghindari overfitting.
+
+Berdasarkan hasil evaluasi, model **XGBoost** dipilih sebagai model terbaik karena menghasilkan metrik evaluasi sempurna:
+
+- **Accuracy** = 1.00
+- **Precision** = 1.00
+- **Recall** = 1.00
+- **F1-score** = 1.00
+
+XGBoost terbukti memiliki kemampuan terbaik dalam menangani data kompleks dan fitur penting secara efisien pada kasus klasifikasi risiko stroke.
 
 ## Evaluation
 
